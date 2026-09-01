@@ -1,4 +1,5 @@
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import { relations } from "drizzle-orm";
 
 // Usuarios con permiso de login, más allá del ADMIN_EMAIL hardcodeado (que
 // siempre entra y es el único que puede administrar esta tabla).
@@ -35,6 +36,11 @@ export const expenses = sqliteTable("expenses", {
     .notNull()
     .$defaultFn(() => new Date().toISOString()),
 });
+
+export const expensesRelations = relations(expenses, ({ one }) => ({
+  card: one(cards, { fields: [expenses.cardId], references: [cards.id] }),
+  category: one(categories, { fields: [expenses.categoryId], references: [categories.id] }),
+}));
 
 export const income = sqliteTable("income", {
   id: integer("id").primaryKey({ autoIncrement: true }),

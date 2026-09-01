@@ -123,12 +123,12 @@
 **Descripción:** Función pura que, dado `purchase_month` y `total_installments`, devuelve la lista de meses donde cae cada cuota. Sin UI ni DB todavía.
 
 **Acceptance criteria:**
-- [ ] Caso 1 cuota → devuelve solo el mes de compra
-- [ ] Caso 12 cuotas cruzando fin de año → meses correctos (dic 2025 → nov 2026)
-- [ ] Caso 3 cuotas dentro del mismo año
+- [x] Caso 1 cuota → devuelve solo el mes de compra
+- [x] Caso 12 cuotas cruzando fin de año → meses correctos (dic 2025 → nov 2026)
+- [x] Caso 3 cuotas dentro del mismo año
 
 **Verification:**
-- [ ] Tests: `npm test lib/installments.test.ts` — todos los casos borde pasan
+- [x] Tests: `npm test` — todos los casos borde pasan (5/5)
 
 **Dependencies:** None (independiente, se puede hacer en paralelo con Fase 2)
 **Files:** `lib/installments.ts`, `tests/installments.test.ts`
