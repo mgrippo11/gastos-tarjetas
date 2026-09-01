@@ -34,38 +34,47 @@ export function parseStatementText(text: string): ParsedExpenseLine[] {
   const results: ParsedExpenseLine[] = [];
   const seen = new Set<string>();
 
-  // pdf-parse a veces junta dos "líneas" visuales en una sola separadas por
-  // tab (reconstrucción de columnas de pdf.js) — se separan como si fueran
-  // renglones distintos.
-  for (const rawLine of text.split(/[\n\t]/)) {
-    // pdf.js a veces linealiza un borde/separador de tabla como "_" pegado
-    // al final de la línea real — no es parte del monto, se descarta.
-    const line = rawLine.trim().replace(/[\s_]+$/, "");
-    if (!line) continue;
+  // pdf.js usa el tab de dos formas distintas según el banco: a veces separa
+  // columnas de UN mismo registro (fecha\tcomprobante\tdescripción\tmonto,
+  // caso Galicia), a veces repite la línea entera dos veces pegada con un
+  // tab (caso ICBC). Si cada mitad separada por tab ya forma un registro
+  // completo por sí sola, son duplicados; si no, el tab era una columna.
+  for (const rawLine of text.split("\n")) {
+    const clean = (s: string) => s.trim().replace(/[\s_]+$/, ""); // "_" = borde de tabla pegado
+    const tabParts = rawLine.split("\t").map(clean).filter(Boolean);
 
-    const match = line.match(LINE_PATTERN);
-    if (!match) continue;
+    const candidateLines =
+      tabParts.length > 1 && tabParts.every((part) => LINE_PATTERN.test(part))
+        ? tabParts
+        : [clean(rawLine.replace(/\t+/g, " "))];
 
-    const [, date, descriptionRaw, leadingMinus, amountRaw, trailingMinus] = match;
-    const sign = leadingMinus || trailingMinus ? -1 : 1;
-    const amount = sign * parseArsAmount(amountRaw);
-    if (!Number.isFinite(amount) || amount === 0) continue;
+    for (const line of candidateLines) {
+      if (!line) continue;
 
-    let description = descriptionRaw.trim().replace(VOUCHER_CODE_PREFIX, "").trim();
-    let installmentNumber = 1;
-    let totalInstallments = 1;
-    const installmentMatch = description.match(INSTALLMENT_PATTERN);
-    if (installmentMatch) {
-      installmentNumber = Number(installmentMatch[1]);
-      totalInstallments = Number(installmentMatch[2]);
-      description = description.replace(INSTALLMENT_PATTERN, " ").trim();
+      const match = line.match(LINE_PATTERN);
+      if (!match) continue;
+
+      const [, date, descriptionRaw, leadingMinus, amountRaw, trailingMinus] = match;
+      const sign = leadingMinus || trailingMinus ? -1 : 1;
+      const amount = sign * parseArsAmount(amountRaw);
+      if (!Number.isFinite(amount) || amount === 0) continue;
+
+      let description = descriptionRaw.trim().replace(VOUCHER_CODE_PREFIX, "").trim();
+      let installmentNumber = 1;
+      let totalInstallments = 1;
+      const installmentMatch = description.match(INSTALLMENT_PATTERN);
+      if (installmentMatch) {
+        installmentNumber = Number(installmentMatch[1]);
+        totalInstallments = Number(installmentMatch[2]);
+        description = description.replace(INSTALLMENT_PATTERN, " ").trim();
+      }
+
+      const key = `${date}|${description}|${amount}`;
+      if (seen.has(key)) continue; // mismo artefacto de duplicación por tab
+      seen.add(key);
+
+      results.push({ date, description, amount, installmentNumber, totalInstallments });
     }
-
-    const key = `${date}|${description}|${amount}`;
-    if (seen.has(key)) continue; // mismo artefacto de duplicación por tab
-    seen.add(key);
-
-    results.push({ date, description, amount, installmentNumber, totalInstallments });
   }
 
   return results;
