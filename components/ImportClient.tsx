@@ -147,6 +147,7 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
                   <input
                     type="number"
                     step="0.01"
+                    min="0.01"
                     value={r.amount}
                     onChange={(e) => updateRow(i, { amount: Number(e.target.value) })}
                     className="w-24 rounded border px-2 py-1"

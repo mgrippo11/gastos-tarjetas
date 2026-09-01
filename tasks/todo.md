@@ -277,8 +277,8 @@
 **Descripción:** Validar montos (número positivo), meses (formato válido), días de cierre/vencimiento (1-31) en todos los formularios.
 
 **Acceptance criteria:**
-- [ ] Ningún formulario permite guardar un monto negativo o no numérico
-- [ ] Mensajes de error claros en cada formulario
+- [x] Ningún formulario permite guardar un monto negativo o no numérico (constraints nativos `type=number/month/email` + `required`/`min`/`max` en todos los inputs, más validación server-side de respaldo en cada action)
+- [x] Mensajes de error claros en cada formulario (validación nativa del navegador es inmediata; `app/error.tsx` cubre el caso raro de un dato inválido que la esquive)
 
 **Verification:**
 - [ ] Manual: probar inputs inválidos en cada formulario
