@@ -38,12 +38,12 @@
 ---
 
 ### Task 3: Autenticación
-**Descripción:** NextAuth Credentials contra usuario único por variables de entorno. Middleware que protege todas las rutas salvo `/login`.
+**Descripción:** NextAuth Google provider, restringido al email en `ADMIN_EMAIL` vía callback `signIn`. Middleware que protege todas las rutas salvo `/login`.
 
 **Acceptance criteria:**
 - [ ] Entrar a cualquier ruta sin sesión redirige a `/login`
-- [ ] Login con `ADMIN_EMAIL`/`ADMIN_PASSWORD_HASH` correctos entra
-- [ ] Login con credenciales incorrectas muestra error, no entra
+- [ ] Login con la cuenta Google de `ADMIN_EMAIL` entra
+- [ ] Login con cualquier otra cuenta Google es rechazado, no entra
 
 **Verification:**
 - [ ] Manual: probar los 3 casos de arriba en local y en Vercel (con env vars configuradas ahí también)

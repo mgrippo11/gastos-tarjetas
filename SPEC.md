@@ -19,7 +19,7 @@ Fuera de v1 (no pedido, no se construye): multi-usuario, multi-moneda (todo es A
 - **Next.js 14+ (App Router) + TypeScript** — un solo proyecto full-stack, sin backend aparte.
 - **Turso (libSQL)** — ya tenés la cuenta.
 - **Drizzle ORM** — capa fina sobre libSQL, tipado, sin magia.
-- **NextAuth (Credentials provider)** — login simple usuario/contraseña vía variables de entorno, sin tabla de usuarios ni flujo de registro (sos el único usuario).
+- **NextAuth (Google provider)** — login con cuenta de Google, restringido al email en `ADMIN_EMAIL` vía callback `signIn`. Sin tabla de usuarios, sin password propio.
 - **Tailwind CSS** — estilos sin escribir CSS a mano.
 - **Vercel** — ya tenés la cuenta; deploy con `git push`.
 - **pdf-parse** — extracción de texto de PDFs de resúmenes (ver sección Importación).
