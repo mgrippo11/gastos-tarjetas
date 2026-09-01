@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Reemplazar la planilla Excel personal de Martín para el control de gastos de tarjetas de crédito, ingresos y gastos varios. Un solo usuario (Martín), acceso web con login.
+Reemplazar la planilla Excel personal de Martín para el control de gastos de tarjetas de crédito, ingresos y gastos varios. Multi-usuario por invitación: Martín es admin (vía `ADMIN_EMAIL`) y puede darle acceso a otras cuentas de Google desde un panel; cada usuario ve solo sus propias tarjetas, gastos e ingresos (las categorías son compartidas).
 
 Problema hoy: cada mes retipea a mano cada gasto en cuotas ("spotify 01|03", "spotify 02|03"...), no tiene categorías, y cargar un resumen de tarjeta es 100% manual.
 
@@ -12,14 +12,14 @@ Problema hoy: cada mes retipea a mano cada gasto en cuotas ("spotify 01|03", "sp
 
 Incluye: tarjetas, gastos de tarjeta (con cuotas automáticas), gastos varios (efectivo/débito), ingresos, categorías, balance mensual, importación de resúmenes en PDF.
 
-Fuera de v1 (no pedido, no se construye): multi-usuario, multi-moneda (todo es ARS), apps móviles nativas, conciliación bancaria automática, notificaciones/recordatorios.
+Fuera de v1 (no pedido, no se construye): multi-moneda (todo es ARS), apps móviles nativas, conciliación bancaria automática, notificaciones/recordatorios, roles intermedios (todo usuario invitado tiene los mismos permisos sobre sus propios datos; solo `ADMIN_EMAIL` administra la lista de invitados).
 
 ## Tech Stack
 
 - **Next.js 14+ (App Router) + TypeScript** — un solo proyecto full-stack, sin backend aparte.
 - **Turso (libSQL)** — ya tenés la cuenta.
 - **Drizzle ORM** — capa fina sobre libSQL, tipado, sin magia.
-- **NextAuth (Google provider)** — login con cuenta de Google, restringido al email en `ADMIN_EMAIL` vía callback `signIn`. Sin tabla de usuarios, sin password propio.
+- **NextAuth (Google provider)** — login con cuenta de Google. El callback `signIn` deja pasar a `ADMIN_EMAIL` o a cualquier email presente en la tabla `users` (allowlist administrada desde `/admin/users`). Sin password propio.
 - **Tailwind CSS** — estilos sin escribir CSS a mano.
 - **Vercel** — ya tenés la cuenta; deploy con `git push`.
 - **pdf-parse** — extracción de texto de PDFs de resúmenes (ver sección Importación).
@@ -27,15 +27,21 @@ Fuera de v1 (no pedido, no se construye): multi-usuario, multi-moneda (todo es A
 ## Modelo de datos
 
 ```
+users
+  email (PK)          -- allowlist de invitados; ADMIN_EMAIL no está acá, es hardcodeado
+  created_at
+
 cards
-  id, name, closing_day (nullable int 1-31)   -- día de cierre del resumen
+  id, owner_email, name, closing_day (nullable int 1-31)   -- día de cierre del resumen
 
 categories
   id, name                                     -- semillas: Comida, Servicios, Entretenimiento,
                                                 -- Transporte, Salud, Suscripciones, Otros
+                                                -- (compartidas entre todos los usuarios)
 
 expenses
-  id, card_id (nullable -> null = gasto vario / efectivo)
+  id, owner_email
+  card_id (nullable -> null = gasto vario / efectivo)
   category_id (nullable)
   description
   amount              -- monto de CADA cuota, en ARS
@@ -45,8 +51,10 @@ expenses
   created_at
 
 income
-  id, description (nullable), amount, month ("YYYY-MM")
+  id, owner_email, description (nullable), amount, month ("YYYY-MM")
 ```
+
+**Aislamiento por usuario**: toda query de `cards`/`expenses`/`income` filtra por `owner_email = session.user.email`. `categories` es la única tabla compartida entre usuarios.
 
 **Cuotas automáticas**: no se duplica una fila por mes. Un gasto con `total_installments=3` y `purchase_month="2026-01"` aparece calculado en Enero, Febrero y Marzo (cuota 1/3, 2/3, 3/3) con una sola carga. Esto es la mejora real sobre el Excel actual.
 

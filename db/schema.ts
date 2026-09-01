@@ -1,7 +1,17 @@
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
+// Usuarios con permiso de login, más allá del ADMIN_EMAIL hardcodeado (que
+// siempre entra y es el único que puede administrar esta tabla).
+export const users = sqliteTable("users", {
+  email: text("email").primaryKey(),
+  createdAt: text("created_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+});
+
 export const cards = sqliteTable("cards", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  ownerEmail: text("owner_email").notNull(),
   name: text("name").notNull(),
   closingDay: integer("closing_day"), // 1-31, nullable
 });
@@ -13,6 +23,7 @@ export const categories = sqliteTable("categories", {
 
 export const expenses = sqliteTable("expenses", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  ownerEmail: text("owner_email").notNull(),
   cardId: integer("card_id").references(() => cards.id), // null = gasto vario
   categoryId: integer("category_id").references(() => categories.id),
   description: text("description").notNull(),
@@ -27,6 +38,7 @@ export const expenses = sqliteTable("expenses", {
 
 export const income = sqliteTable("income", {
   id: integer("id").primaryKey({ autoIncrement: true }),
+  ownerEmail: text("owner_email").notNull(),
   description: text("description"),
   amount: real("amount").notNull(),
   month: text("month").notNull(), // "YYYY-MM"

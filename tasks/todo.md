@@ -38,19 +38,36 @@
 ---
 
 ### Task 3: Autenticación
-**Descripción:** NextAuth Google provider, restringido al email en `ADMIN_EMAIL` vía callback `signIn`. Middleware que protege todas las rutas salvo `/login`.
+**Descripción:** NextAuth Google provider. Callback `signIn` deja pasar a `ADMIN_EMAIL` o a cualquier email en la tabla `users`. Proxy (`middleware.ts` renombrado en Next 16) protege todas las rutas salvo `/login`.
 
 **Acceptance criteria:**
 - [x] Entrar a cualquier ruta sin sesión redirige a `/login`
 - [x] Login con la cuenta Google de `ADMIN_EMAIL` entra
-- [ ] Login con cualquier otra cuenta Google es rechazado, no entra
+- [ ] Login con una cuenta Google no listada es rechazado, no entra
 
 **Verification:**
-- [x] Manual: probar los 3 casos de arriba en local y en Vercel (con env vars configuradas ahí también)
+- [x] Manual: probar los casos de arriba en local y en Vercel (con env vars configuradas ahí también)
 
 **Dependencies:** Task 1
-**Files:** `app/(auth)/login/page.tsx`, `middleware.ts`, `lib/auth.ts`
+**Files:** `app/(auth)/login/page.tsx`, `proxy.ts`, `auth.ts`
 **Scope:** M
+
+---
+
+### Task 3b: Panel admin — gestión de usuarios invitados
+**Descripción:** `/admin/users`, solo accesible por `ADMIN_EMAIL`: listar/agregar/quitar emails de la tabla `users` (allowlist de login).
+
+**Acceptance criteria:**
+- [ ] `ADMIN_EMAIL` puede agregar un email y ese email pasa a poder loguearse
+- [ ] `ADMIN_EMAIL` puede quitar un email y ese email deja de poder loguearse
+- [ ] Un usuario no-admin logueado que entra a `/admin/users` es redirigido, no ve la página
+
+**Verification:**
+- [ ] Manual: agregar un email de prueba, verificar que loguea; quitarlo, verificar que ya no puede
+
+**Dependencies:** Task 3
+**Files:** `db/schema.ts` (tabla `users`), `app/admin/users/page.tsx`, `app/admin/users/actions.ts`, `auth.ts`
+**Scope:** S
 
 ---
 

@@ -9,7 +9,7 @@ App de un solo usuario para reemplazar el Excel de gastos de tarjetas. Next.js +
 - **Server Actions en vez de API routes propias** donde alcance — menos boilerplate que armar `app/api/*` a mano para CRUDs simples (Next.js App Router ya lo resuelve).
 - **Cuotas no se duplican en DB.** `lib/installments.ts` calcula en qué meses cae cada cuota a partir de `purchase_month` + `total_installments`. La lista mensual de gastos es una *query calculada*, no una tabla de ocurrencias.
 - **PDF parsing y cálculo de cuotas se escriben y testean como funciones puras primero**, antes de tocar UI — son las dos partes con lógica real (todo lo demás es CRUD), y son los dos riesgos reales del proyecto.
-- **Auth mínima**: NextAuth Credentials contra un usuario hardcodeado por variable de entorno (`ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`). Sin tabla `users`, sin registro — no hace falta para un solo usuario.
+- **Auth por invitación**: NextAuth Google provider. `ADMIN_EMAIL` (env var) siempre entra y es el único que administra la tabla `users` (allowlist) desde `/admin/users`. Datos de `cards`/`expenses`/`income` llevan `owner_email` y toda query filtra por el usuario en sesión — sin tabla de roles, sin permisos intermedios.
 
 ## Dependency Graph
 
