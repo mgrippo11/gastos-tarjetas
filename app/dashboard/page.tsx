@@ -3,11 +3,8 @@ import { auth } from "@/auth";
 import { db } from "@/db/client";
 import { expenses, income } from "@/db/schema";
 import { installmentNumberForMonth } from "@/lib/installments";
-
-function currentMonth() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
+import { currentMonth } from "@/lib/dates";
+import { Field } from "@/components/Field";
 
 function money(n: number) {
   return `$${n.toLocaleString("es-AR")}`;
@@ -47,15 +44,17 @@ export default async function DashboardPage({
 
   const totalExpenses = monthExpenses.reduce((sum, e) => sum + e.amount, 0);
   const totalIncome = monthIncome.reduce((sum, i) => sum + i.amount, 0);
-  const byCard = sumBy(monthExpenses, (e) => e.card?.name ?? "Vario", (e) => e.amount);
+  const byCard = sumBy(monthExpenses, (e) => e.card?.name ?? "Varios", (e) => e.amount);
   const byCategory = sumBy(monthExpenses, (e) => e.category?.name ?? "Sin categoría", (e) => e.amount);
 
   return (
     <div className="mx-auto max-w-2xl p-8">
       <h1 className="mb-6 text-xl font-semibold">Dashboard</h1>
 
-      <form className="mb-8 flex gap-2">
-        <input type="month" name="month" defaultValue={month} className="rounded border px-3 py-2" />
+      <form className="mb-8 flex items-end gap-2">
+        <Field label="Mes">
+          <input type="month" name="month" defaultValue={month} className="rounded border px-3 py-2" />
+        </Field>
         <button type="submit" className="rounded border px-4 py-2">
           Ver mes
         </button>

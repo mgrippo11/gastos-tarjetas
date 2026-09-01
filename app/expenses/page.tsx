@@ -4,12 +4,9 @@ import { auth } from "@/auth";
 import { db } from "@/db/client";
 import { expenses } from "@/db/schema";
 import { installmentNumberForMonth } from "@/lib/installments";
+import { currentMonth } from "@/lib/dates";
+import { Field } from "@/components/Field";
 import { deleteExpense } from "./actions";
-
-function currentMonth() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
 
 export default async function ExpensesPage({
   searchParams,
@@ -41,8 +38,10 @@ export default async function ExpensesPage({
         </Link>
       </div>
 
-      <form className="mb-6 flex gap-2">
-        <input type="month" name="month" defaultValue={month} className="rounded border px-3 py-2" />
+      <form className="mb-6 flex items-end gap-2">
+        <Field label="Mes">
+          <input type="month" name="month" defaultValue={month} className="rounded border px-3 py-2" />
+        </Field>
         <button type="submit" className="rounded border px-4 py-2">
           Ver mes
         </button>
@@ -50,22 +49,33 @@ export default async function ExpensesPage({
 
       <ul className="space-y-2">
         {monthExpenses.map((e) => (
-          <li key={e.id} className="flex items-center justify-between rounded border px-3 py-2">
-            <div>
-              <div className="font-medium">
-                {e.description}
-                {e.totalInstallments > 1 ? ` (${e.installmentNumber}/${e.totalInstallments})` : ""}
+          <li key={e.id} className="rounded border px-3 py-2">
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="font-medium">
+                  {e.description}
+                  {e.totalInstallments > 1 ? ` (cuota ${e.installmentNumber}/${e.totalInstallments})` : ""}
+                </div>
+                <div className="text-sm text-zinc-500">
+                  {e.card?.name ?? "Varios"} · {e.category?.name ?? "Sin categoría"} · $
+                  {e.amount.toLocaleString("es-AR")} c/u
+                </div>
+                <div className="text-xs text-zinc-400">
+                  Compra: {e.purchaseMonth}
+                  {e.dueDay ? ` · vence el ${e.dueDay}` : ""}
+                </div>
               </div>
-              <div className="text-sm text-zinc-500">
-                {e.card?.name ?? "Vario"} · {e.category?.name ?? "Sin categoría"} · $
-                {e.amount.toLocaleString("es-AR")}
+              <div className="flex shrink-0 gap-3 text-sm">
+                <Link href={`/expenses/${e.id}/edit`} className="underline">
+                  Editar
+                </Link>
+                <form action={deleteExpense.bind(null, e.id)}>
+                  <button type="submit" className="text-red-600 hover:underline">
+                    Borrar
+                  </button>
+                </form>
               </div>
             </div>
-            <form action={deleteExpense.bind(null, e.id)}>
-              <button type="submit" className="text-red-600 hover:underline">
-                Borrar
-              </button>
-            </form>
           </li>
         ))}
         {monthExpenses.length === 0 && (

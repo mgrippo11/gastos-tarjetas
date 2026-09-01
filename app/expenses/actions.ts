@@ -18,18 +18,13 @@ function parseDay(raw: FormDataEntryValue | null): number | null {
   return Number.isInteger(n) && n >= 1 && n <= 31 ? n : null;
 }
 
-export async function addExpense(formData: FormData) {
-  const session = await auth();
-  const ownerEmail = session?.user?.email;
-  if (!ownerEmail) throw new Error("No autorizado");
-
+function parseExpenseFields(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   const amount = parsePositiveNumber(formData.get("amount"));
   const purchaseMonth = String(formData.get("purchaseMonth") ?? "");
   const totalInstallmentsRaw = Number(formData.get("totalInstallments"));
-  const totalInstallments = Number.isInteger(totalInstallmentsRaw) && totalInstallmentsRaw >= 1
-    ? totalInstallmentsRaw
-    : null;
+  const totalInstallments =
+    Number.isInteger(totalInstallmentsRaw) && totalInstallmentsRaw >= 1 ? totalInstallmentsRaw : null;
   const cardIdRaw = String(formData.get("cardId") ?? "");
   const cardId = cardIdRaw ? Number(cardIdRaw) : null;
   const categoryIdRaw = String(formData.get("categoryId") ?? "");
@@ -40,16 +35,29 @@ export async function addExpense(formData: FormData) {
     throw new Error("Datos inválidos");
   }
 
-  await db.insert(expenses).values({
-    ownerEmail,
-    description,
-    amount,
-    purchaseMonth,
-    totalInstallments,
-    cardId,
-    categoryId,
-    dueDay,
-  });
+  return { description, amount, purchaseMonth, totalInstallments, cardId, categoryId, dueDay };
+}
+
+export async function addExpense(formData: FormData) {
+  const session = await auth();
+  const ownerEmail = session?.user?.email;
+  if (!ownerEmail) throw new Error("No autorizado");
+
+  await db.insert(expenses).values({ ownerEmail, ...parseExpenseFields(formData) });
+
+  revalidatePath("/expenses");
+  redirect("/expenses");
+}
+
+export async function updateExpense(id: number, formData: FormData) {
+  const session = await auth();
+  const ownerEmail = session?.user?.email;
+  if (!ownerEmail) throw new Error("No autorizado");
+
+  await db
+    .update(expenses)
+    .set(parseExpenseFields(formData))
+    .where(and(eq(expenses.id, id), eq(expenses.ownerEmail, ownerEmail)));
 
   revalidatePath("/expenses");
   redirect("/expenses");

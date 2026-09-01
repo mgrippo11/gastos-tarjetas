@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth, isAdminEmail } from "@/auth";
 import { db } from "@/db/client";
+import { Field } from "@/components/Field";
 import { addUser, removeUser } from "./actions";
 
 export default async function AdminUsersPage() {
@@ -13,14 +14,18 @@ export default async function AdminUsersPage() {
     <div className="mx-auto max-w-lg p-8">
       <h1 className="mb-6 text-xl font-semibold">Usuarios permitidos</h1>
 
-      <form action={addUser} className="mb-8 flex gap-2">
-        <input
-          type="email"
-          name="email"
-          placeholder="email@gmail.com"
-          required
-          className="flex-1 rounded border px-3 py-2"
-        />
+      <form action={addUser} className="mb-8 flex items-end gap-2">
+        <div className="flex-1">
+          <Field label="Email de Google">
+            <input
+              type="email"
+              name="email"
+              placeholder="email@gmail.com"
+              required
+              className="w-full rounded border px-3 py-2"
+            />
+          </Field>
+        </div>
         <button
           type="submit"
           className="rounded bg-foreground px-4 py-2 text-background"

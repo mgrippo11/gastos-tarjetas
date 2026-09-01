@@ -2,12 +2,9 @@ import { and, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/db/client";
 import { income } from "@/db/schema";
+import { Field } from "@/components/Field";
+import { currentMonth } from "@/lib/dates";
 import { addIncome, deleteIncome } from "./actions";
-
-function currentMonth() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
 
 export default async function IncomePage({
   searchParams,
@@ -26,31 +23,39 @@ export default async function IncomePage({
     <div className="mx-auto max-w-lg p-8">
       <h1 className="mb-6 text-xl font-semibold">Ingresos</h1>
 
-      <form className="mb-6 flex gap-2">
-        <input type="month" name="month" defaultValue={month} className="rounded border px-3 py-2" />
+      <form className="mb-6 flex items-end gap-2">
+        <Field label="Mes">
+          <input type="month" name="month" defaultValue={month} className="rounded border px-3 py-2" />
+        </Field>
         <button type="submit" className="rounded border px-4 py-2">
           Ver mes
         </button>
       </form>
 
-      <form action={addIncome} className="mb-8 space-y-2">
+      <form action={addIncome} className="mb-8 flex items-end gap-2">
         <input type="hidden" name="month" value={month} />
-        <div className="flex gap-2">
-          <input
-            type="text"
-            name="description"
-            placeholder="Descripción (opcional)"
-            className="flex-1 rounded border px-3 py-2"
-          />
-          <input
-            type="number"
-            name="amount"
-            placeholder="Monto"
-            step="0.01"
-            min="0.01"
-            required
-            className="w-36 rounded border px-3 py-2"
-          />
+        <div className="flex-1">
+          <Field label="Descripción">
+            <input
+              type="text"
+              name="description"
+              placeholder="Sueldo, freelance..."
+              className="w-full rounded border px-3 py-2"
+            />
+          </Field>
+        </div>
+        <div className="w-36">
+          <Field label="Monto">
+            <input
+              type="number"
+              name="amount"
+              placeholder="0.00"
+              step="0.01"
+              min="0.01"
+              required
+              className="w-full rounded border px-3 py-2"
+            />
+          </Field>
         </div>
         <button type="submit" className="rounded bg-foreground px-4 py-2 text-background">
           Agregar
