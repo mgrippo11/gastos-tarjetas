@@ -84,11 +84,11 @@
 **Descripción:** Página para listar y agregar tarjetas (nombre + día de cierre opcional). Sin edición/borrado en v1 salvo que sea trivial agregarlo.
 
 **Acceptance criteria:**
-- [ ] Se pueden agregar las 4 tarjetas reales de Martín (Visa ICBC, Master ICBC, Visa Galicia, BBVA)
-- [ ] La lista de tarjetas se ve en `/cards`
+- [x] Se pueden agregar las 4 tarjetas reales de Martín (Visa ICBC, Master ICBC, Visa Galicia, BBVA)
+- [x] La lista de tarjetas se ve en `/cards`
 
 **Verification:**
-- [ ] Manual: agregar y listar
+- [x] Manual: agregar y listar
 
 **Dependencies:** Task 2, Task 3
 **Files:** `app/cards/page.tsx`, `app/cards/actions.ts`
@@ -100,11 +100,11 @@
 **Descripción:** Seed script con las 7 categorías default, página para agregar categorías nuevas.
 
 **Acceptance criteria:**
-- [ ] Al correr el seed, existen las 7 categorías default
-- [ ] Se puede agregar una categoría nueva desde la UI
+- [x] Al correr el seed, existen las 7 categorías default
+- [x] Se puede agregar una categoría nueva desde la UI
 
 **Verification:**
-- [ ] Manual: correr seed, ver categorías en `/categories`
+- [x] Manual: correr seed, ver categorías en `/categories`
 
 **Dependencies:** Task 2, Task 3
 **Files:** `db/seed.ts`, `app/categories/page.tsx`, `app/categories/actions.ts`
@@ -113,7 +113,7 @@
 ---
 
 ## Checkpoint: Cards & Categories
-- [ ] Datos base cargados, listos para usarse como FK en gastos
+- [x] Datos base cargados, listos para usarse como FK en gastos
 
 ---
 
@@ -140,12 +140,12 @@
 **Descripción:** Formulario para cargar un gasto: descripción, monto, categoría, tarjeta (o "vario" con día de vencimiento), cuotas totales, mes de compra.
 
 **Acceptance criteria:**
-- [ ] Cargar un gasto de tarjeta en 1 cuota funciona
-- [ ] Cargar un gasto de tarjeta en 3 cuotas funciona (una sola carga)
-- [ ] Cargar un gasto vario con día de vencimiento funciona
+- [x] Cargar un gasto de tarjeta en 1 cuota funciona
+- [x] Cargar un gasto de tarjeta en 3 cuotas funciona (una sola carga)
+- [x] Cargar un gasto vario con día de vencimiento funciona
 
 **Verification:**
-- [ ] Manual: los 3 casos de arriba, revisar en `db:studio` que se guardó 1 sola fila
+- [x] Manual: los 3 casos de arriba, revisar en `db:studio` que se guardó 1 sola fila
 
 **Dependencies:** Task 4, Task 5, Task 6
 **Files:** `app/expenses/new/page.tsx`, `app/expenses/actions.ts`
@@ -157,12 +157,12 @@
 **Descripción:** Ver los gastos de un mes dado, calculando qué cuotas caen ese mes vía `lib/installments.ts`. Editar/borrar un gasto.
 
 **Acceptance criteria:**
-- [ ] Un gasto de 3 cuotas cargado en enero aparece en enero, febrero y marzo con la cuota correcta (1/3, 2/3, 3/3)
-- [ ] Editar o borrar el gasto se refleja en todos los meses donde aparecía
+- [x] Un gasto de 3 cuotas cargado en enero aparece en enero, febrero y marzo con la cuota correcta (1/3, 2/3, 3/3)
+- [x] Editar o borrar el gasto se refleja en todos los meses donde aparecía
 
 **Verification:**
-- [ ] Manual: reproducir el criterio de éxito de la spec (cargar 1 vez, ver en 3 meses)
-- [ ] Tests: reutiliza los de Task 6
+- [x] Manual: reproducir el criterio de éxito de la spec (cargar 1 vez, ver en 3 meses)
+- [x] Tests: reutiliza los de Task 6
 
 **Dependencies:** Task 7
 **Files:** `app/expenses/page.tsx`
@@ -171,8 +171,8 @@
 ---
 
 ## Checkpoint: Expenses
-- [ ] Criterio de éxito central de la spec cumplido: cuotas automáticas funcionando end-to-end
-- [ ] Revisar con Martín antes de seguir
+- [x] Criterio de éxito central de la spec cumplido: cuotas automáticas funcionando end-to-end
+- [x] Revisar con Martín antes de seguir
 
 ---
 
@@ -182,10 +182,10 @@
 **Descripción:** Alta y listado de ingresos por mes (descripción opcional + monto).
 
 **Acceptance criteria:**
-- [ ] Cargar un ingreso y verlo listado en `/income` filtrado por mes
+- [x] Cargar un ingreso y verlo listado en `/income` filtrado por mes
 
 **Verification:**
-- [ ] Manual
+- [x] Manual
 
 **Dependencies:** Task 2, Task 3
 **Files:** `app/income/page.tsx`, `app/income/actions.ts`
@@ -197,12 +197,12 @@
 **Descripción:** Vista de un mes: total por tarjeta, total por categoría, ingresos vs. gastos.
 
 **Acceptance criteria:**
-- [ ] Elegir un mes muestra el total correcto por cada tarjeta activa ese mes
-- [ ] Muestra total por categoría
-- [ ] Muestra ingresos vs. gastos del mes
+- [x] Elegir un mes muestra el total correcto por cada tarjeta activa ese mes
+- [x] Muestra total por categoría
+- [x] Muestra ingresos vs. gastos del mes
 
 **Verification:**
-- [ ] Manual: comparar contra un mes ya cargado del Excel viejo para validar que los totales cierran
+- [x] Manual: comparar contra un mes ya cargado del Excel viejo para validar que los totales cierran
 
 **Dependencies:** Task 8, Task 9
 **Files:** `app/dashboard/page.tsx`
@@ -211,7 +211,7 @@
 ---
 
 ## Checkpoint: Income & Dashboard
-- [ ] Flujo completo de un mes (gastos + ingresos + balance) funciona de punta a punta
+- [x] Flujo completo de un mes (gastos + ingresos + balance) funciona de punta a punta
 
 ---
 
@@ -253,11 +253,11 @@
 **Descripción:** Al confirmar la preview, insertar todos los gastos como filas en `expenses` (1 cuota cada uno, salvo que el usuario marque cuotas al editar la fila).
 
 **Acceptance criteria:**
-- [ ] Confirmar la preview inserta todos los gastos visibles en la tabla
-- [ ] Los gastos importados aparecen en `/expenses` y en el dashboard del mes correspondiente
+- [x] Confirmar la preview inserta todos los gastos visibles en la tabla
+- [x] Los gastos importados aparecen en `/expenses` y en el dashboard del mes correspondiente
 
 **Verification:**
-- [ ] Manual: importar un resumen completo y verificar contra el dashboard
+- [x] Manual: importar un resumen completo y verificar contra el dashboard
 
 **Dependencies:** Task 12
 **Files:** `app/import/actions.ts`
@@ -266,8 +266,8 @@
 ---
 
 ## Checkpoint: Import PDF
-- [ ] Un resumen real de Martín se importa de punta a punta más rápido que cargarlo a mano
-- [ ] Revisar con Martín — este es el checkpoint de mayor riesgo del proyecto
+- [x] Un resumen real de Martín se importa de punta a punta más rápido que cargarlo a mano
+- [x] Revisar con Martín — este es el checkpoint de mayor riesgo del proyecto
 
 ---
 
@@ -281,7 +281,7 @@
 - [x] Mensajes de error claros en cada formulario (validación nativa del navegador es inmediata; `app/error.tsx` cubre el caso raro de un dato inválido que la esquive)
 
 **Verification:**
-- [ ] Manual: probar inputs inválidos en cada formulario
+- [x] Manual: probar inputs inválidos en cada formulario
 
 **Dependencies:** Tasks 7, 9, 12
 **Files:** varios `actions.ts`
@@ -293,10 +293,10 @@
 **Descripción:** Confirmar que todas las env vars están seteadas en Vercel, smoke test completo en producción.
 
 **Acceptance criteria:**
-- [ ] Los 4 criterios de éxito de SPEC.md se cumplen en la URL pública de Vercel, no solo en local
+- [x] Los 4 criterios de éxito de SPEC.md se cumplen en la URL pública de Vercel, no solo en local
 
 **Verification:**
-- [ ] Manual: recorrer los 4 criterios de éxito en producción
+- [x] Manual: recorrido por Martín en producción
 
 **Dependencies:** All previous tasks
 **Files:** N/A (verificación, no código)
@@ -305,5 +305,5 @@
 ---
 
 ## Checkpoint: Complete
-- [ ] Todos los criterios de éxito de SPEC.md cumplidos en producción
-- [ ] Listo para uso real de Martín
+- [x] Todos los criterios de éxito de SPEC.md cumplidos en producción
+- [x] Listo para uso real de Martín
