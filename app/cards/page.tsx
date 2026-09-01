@@ -1,9 +1,13 @@
-import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/db/client";
 import { cards } from "@/db/schema";
 import { Field } from "@/components/Field";
+import { Card } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button, LinkButton } from "@/components/ui/Button";
+import { CreditCardIcon, PencilSimpleIcon } from "@/components/icons";
 import { addCard } from "./actions";
 
 export default async function CardsPage() {
@@ -14,54 +18,44 @@ export default async function CardsPage() {
   });
 
   return (
-    <div className="mx-auto max-w-lg p-8">
-      <h1 className="mb-6 text-xl font-semibold">Tarjetas</h1>
+    <div className="mx-auto max-w-lg p-6">
+      <PageHeader title="Tarjetas" />
 
-      <form action={addCard} className="mb-8 flex items-end gap-2">
-        <div className="flex-1">
-          <Field label="Nombre">
-            <input
-              type="text"
-              name="name"
-              placeholder="Visa ICBC"
-              required
-              className="w-full rounded border px-3 py-2"
-            />
-          </Field>
-        </div>
-        <div className="w-36">
-          <Field label="Día de cierre">
-            <input
-              type="number"
-              name="closingDay"
-              placeholder="1-31"
-              min={1}
-              max={31}
-              className="w-full rounded border px-3 py-2"
-            />
-          </Field>
-        </div>
-        <button type="submit" className="rounded bg-foreground px-4 py-2 text-background">
-          Agregar
-        </button>
-      </form>
+      <Card className="mb-8 p-4">
+        <form action={addCard} className="flex items-end gap-2">
+          <div className="flex-1">
+            <Field label="Nombre">
+              <input type="text" name="name" placeholder="Visa ICBC" required />
+            </Field>
+          </div>
+          <div className="w-36">
+            <Field label="Día de cierre">
+              <input type="number" name="closingDay" placeholder="1-31" min={1} max={31} />
+            </Field>
+          </div>
+          <Button type="submit">Agregar</Button>
+        </form>
+      </Card>
 
-      <ul className="space-y-2">
-        {myCards.map((c) => (
-          <li key={c.id} className="flex items-center justify-between rounded border px-3 py-2">
-            <span>
-              {c.name}
-              {c.closingDay ? ` — cierra el ${c.closingDay}` : ""}
-            </span>
-            <Link href={`/cards/${c.id}/edit`} className="text-sm underline">
-              Editar
-            </Link>
-          </li>
-        ))}
-        {myCards.length === 0 && (
-          <li className="text-sm text-zinc-500">Todavía no cargaste tarjetas.</li>
-        )}
-      </ul>
+      {myCards.length === 0 ? (
+        <EmptyState>Todavía no cargaste tarjetas.</EmptyState>
+      ) : (
+        <Card className="divide-y divide-border">
+          {myCards.map((c) => (
+            <div key={c.id} className="flex items-center justify-between px-4 py-3">
+              <span className="flex items-center gap-2">
+                <CreditCardIcon size={18} className="text-muted-foreground" aria-hidden="true" />
+                {c.name}
+                {c.closingDay ? ` — cierra el ${c.closingDay}` : ""}
+              </span>
+              <LinkButton href={`/cards/${c.id}/edit`} variant="ghost" size="sm">
+                <PencilSimpleIcon size={16} aria-hidden="true" />
+                <span className="sr-only">Editar</span>
+              </LinkButton>
+            </div>
+          ))}
+        </Card>
+      )}
     </div>
   );
 }

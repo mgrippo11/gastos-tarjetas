@@ -1,17 +1,20 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { UploadSimpleIcon } from "@phosphor-icons/react";
 import { Field } from "@/components/Field";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { parsePdf, confirmImport, type ImportCandidate, type ImportRow } from "@/app/import/actions";
 
-type Card = { id: number; name: string };
+type CardOption = { id: number; name: string };
 type Category = { id: number; name: string };
 type EditableRow = ImportCandidate & {
   categoryId: number | null;
   included: boolean;
 };
 
-export function ImportClient({ cards, categories }: { cards: Card[]; categories: Category[] }) {
+export function ImportClient({ cards, categories }: { cards: CardOption[]; categories: Category[] }) {
   const [cardId, setCardId] = useState("");
   const [rows, setRows] = useState<EditableRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -61,39 +64,28 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
 
   if (!rows) {
     return (
-      <form action={handleParse} className="space-y-4">
-        <Field label="Tarjeta del resumen">
-          <select
-            value={cardId}
-            onChange={(e) => setCardId(e.target.value)}
-            className="w-full rounded border px-3 py-2"
-          >
-            <option value="">Varios (efectivo / débito)</option>
-            {cards.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="PDF del resumen">
-          <input
-            type="file"
-            name="file"
-            accept="application/pdf"
-            required
-            className="w-full rounded border px-3 py-2"
-          />
-        </Field>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
-          type="submit"
-          disabled={isPending}
-          className="rounded bg-foreground px-4 py-2 text-background disabled:opacity-50"
-        >
-          {isPending ? "Analizando..." : "Analizar PDF"}
-        </button>
-      </form>
+      <Card className="p-6">
+        <form action={handleParse} className="space-y-4">
+          <Field label="Tarjeta del resumen">
+            <select value={cardId} onChange={(e) => setCardId(e.target.value)}>
+              <option value="">Varios (efectivo / débito)</option>
+              {cards.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="PDF del resumen">
+            <input type="file" name="file" accept="application/pdf" required />
+          </Field>
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <Button type="submit" disabled={isPending} className="w-full">
+            <UploadSimpleIcon size={18} aria-hidden="true" />
+            {isPending ? "Analizando..." : "Analizar PDF"}
+          </Button>
+        </form>
+      </Card>
     );
   }
 
@@ -103,80 +95,81 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted-foreground">
         {rows.length} líneas detectadas. Revisá, corregí o desmarcá antes de confirmar — nada se guarda todavía.
       </p>
 
-      <div className="overflow-x-auto">
+      <Card className="overflow-x-auto">
         <table className="w-full min-w-[42rem] border-collapse text-sm">
           <thead>
-            <tr className="border-b text-left text-zinc-500">
-              <th className="py-1 pr-2">Incluir</th>
-              <th className="py-1 pr-2">Descripción</th>
-              <th className="py-1 pr-2">Monto</th>
-              <th className="py-1 pr-2">Mes</th>
-              <th className="py-1 pr-2">Cuotas</th>
-              <th className="py-1 pr-2">Categoría</th>
+            <tr className="border-b border-border text-left text-muted-foreground">
+              <th className="px-3 py-2 font-medium">Incluir</th>
+              <th className="px-3 py-2 font-medium">Descripción</th>
+              <th className="px-3 py-2 font-medium">Monto</th>
+              <th className="px-3 py-2 font-medium">Mes</th>
+              <th className="px-3 py-2 font-medium">Cuotas</th>
+              <th className="px-3 py-2 font-medium">Categoría</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((r, i) => (
-              <tr key={i} className="border-b">
-                <td className="py-1 pr-2">
+              <tr key={i} className="border-b border-border last:border-0">
+                <td className="px-3 py-2">
                   <input
                     type="checkbox"
                     checked={r.included}
                     onChange={(e) => updateRow(i, { included: e.target.checked })}
+                    className="h-4 w-4 accent-primary"
                   />
                 </td>
-                <td className="py-1 pr-2">
+                <td className="px-3 py-2">
                   <input
                     type="text"
                     value={r.description}
                     onChange={(e) => updateRow(i, { description: e.target.value })}
-                    className="w-full min-w-[10rem] rounded border px-2 py-1"
+                    className="min-w-[10rem]"
                   />
                   {r.totalInstallments > 1 && (
-                    <div className="mt-0.5 text-xs text-zinc-500">
+                    <div className="mt-0.5 text-xs text-muted-foreground">
                       Cuota {r.installmentNumber}/{r.totalInstallments}
                       {r.installmentNumber > 1 && " — probablemente ya cargada, revisá antes de tildar"}
                     </div>
                   )}
                 </td>
-                <td className="py-1 pr-2">
+                <td className="px-3 py-2">
                   <input
                     type="number"
                     step="0.01"
                     min="0.01"
                     value={r.amount}
                     onChange={(e) => updateRow(i, { amount: Number(e.target.value) })}
-                    className="w-24 rounded border px-2 py-1"
+                    className="w-24 font-money"
                   />
                 </td>
-                <td className="py-1 pr-2">
+                <td className="px-3 py-2">
                   <input
                     type="month"
                     value={r.purchaseMonth}
                     onChange={(e) => updateRow(i, { purchaseMonth: e.target.value })}
-                    className="rounded border px-2 py-1"
+                    className="w-36"
                   />
                 </td>
-                <td className="py-1 pr-2">
+                <td className="px-3 py-2">
                   <input
                     type="number"
                     min={1}
                     value={r.totalInstallments}
                     onChange={(e) => updateRow(i, { totalInstallments: Number(e.target.value) })}
-                    className="w-14 rounded border px-2 py-1"
+                    className="w-14"
                   />
                 </td>
-                <td className="py-1 pr-2">
+                <td className="px-3 py-2">
                   <select
                     value={r.categoryId ?? ""}
                     onChange={(e) =>
                       updateRow(i, { categoryId: e.target.value ? Number(e.target.value) : null })
                     }
-                    className="rounded border px-2 py-1"
+                    className="w-36"
                   >
                     <option value="">Sin categoría</option>
                     {categories.map((c) => (
@@ -190,7 +183,7 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
             ))}
           </tbody>
         </table>
-      </div>
+      </Card>
 
       <p className="text-right text-sm font-medium">
         Total a importar: {includedCount} gasto{includedCount === 1 ? "" : "s"} · $
@@ -198,16 +191,12 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
       </p>
 
       <div className="flex gap-2">
-        <button onClick={() => setRows(null)} className="rounded border px-4 py-2">
+        <Button variant="outline" onClick={() => setRows(null)}>
           Volver
-        </button>
-        <button
-          onClick={handleConfirm}
-          disabled={isPending || includedCount === 0}
-          className="rounded bg-foreground px-4 py-2 text-background disabled:opacity-50"
-        >
+        </Button>
+        <Button onClick={handleConfirm} disabled={isPending || includedCount === 0}>
           {isPending ? "Importando..." : `Confirmar importación (${includedCount})`}
-        </button>
+        </Button>
       </div>
     </div>
   );

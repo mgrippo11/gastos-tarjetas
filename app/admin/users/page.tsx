@@ -2,6 +2,10 @@ import { redirect } from "next/navigation";
 import { auth, isAdminEmail } from "@/auth";
 import { db } from "@/db/client";
 import { Field } from "@/components/Field";
+import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { TrashIcon } from "@/components/icons";
 import { addUser, removeUser } from "./actions";
 
 export default async function AdminUsersPage() {
@@ -11,47 +15,36 @@ export default async function AdminUsersPage() {
   const allowedUsers = await db.query.users.findMany();
 
   return (
-    <div className="mx-auto max-w-lg p-8">
-      <h1 className="mb-6 text-xl font-semibold">Usuarios permitidos</h1>
+    <div className="mx-auto max-w-lg p-6">
+      <PageHeader title="Usuarios permitidos" />
 
-      <form action={addUser} className="mb-8 flex items-end gap-2">
-        <div className="flex-1">
-          <Field label="Email de Google">
-            <input
-              type="email"
-              name="email"
-              placeholder="email@gmail.com"
-              required
-              className="w-full rounded border px-3 py-2"
-            />
-          </Field>
-        </div>
-        <button
-          type="submit"
-          className="rounded bg-foreground px-4 py-2 text-background"
-        >
-          Agregar
-        </button>
-      </form>
+      <Card className="mb-8 p-4">
+        <form action={addUser} className="flex items-end gap-2">
+          <div className="flex-1">
+            <Field label="Email de Google">
+              <input type="email" name="email" placeholder="email@gmail.com" required />
+            </Field>
+          </div>
+          <Button type="submit">Agregar</Button>
+        </form>
+      </Card>
 
-      <ul className="space-y-2">
-        <li className="flex items-center justify-between rounded border px-3 py-2 text-sm text-zinc-500">
+      <Card className="divide-y divide-border">
+        <div className="flex items-center justify-between px-4 py-3 text-sm text-muted-foreground">
           {process.env.ADMIN_EMAIL} (admin, fijo)
-        </li>
+        </div>
         {allowedUsers.map((u) => (
-          <li
-            key={u.email}
-            className="flex items-center justify-between rounded border px-3 py-2"
-          >
+          <div key={u.email} className="flex items-center justify-between px-4 py-3">
             {u.email}
             <form action={removeUser.bind(null, u.email)}>
-              <button type="submit" className="text-red-600 hover:underline">
+              <Button type="submit" variant="danger" size="sm">
+                <TrashIcon size={16} aria-hidden="true" />
                 Quitar
-              </button>
+              </Button>
             </form>
-          </li>
+          </div>
         ))}
-      </ul>
+      </Card>
     </div>
   );
 }

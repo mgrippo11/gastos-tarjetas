@@ -4,6 +4,12 @@ import { db } from "@/db/client";
 import { income } from "@/db/schema";
 import { Field } from "@/components/Field";
 import { currentMonth } from "@/lib/dates";
+import { Card } from "@/components/ui/Card";
+import { Money } from "@/components/ui/Money";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { TrashIcon } from "@/components/icons";
 import { addIncome, deleteIncome } from "./actions";
 
 export default async function IncomePage({
@@ -20,65 +26,54 @@ export default async function IncomePage({
   });
 
   return (
-    <div className="mx-auto max-w-lg p-8">
-      <h1 className="mb-6 text-xl font-semibold">Ingresos</h1>
+    <div className="mx-auto max-w-lg p-6">
+      <PageHeader title="Ingresos" />
 
       <form className="mb-6 flex items-end gap-2">
         <Field label="Mes">
-          <input type="month" name="month" defaultValue={month} className="rounded border px-3 py-2" />
+          <input type="month" name="month" defaultValue={month} className="w-40" />
         </Field>
-        <button type="submit" className="rounded border px-4 py-2">
+        <button type="submit" className="h-11 rounded-md border border-border px-4 text-sm hover:bg-muted">
           Ver mes
         </button>
       </form>
 
-      <form action={addIncome} className="mb-8 flex items-end gap-2">
-        <input type="hidden" name="month" value={month} />
-        <div className="flex-1">
-          <Field label="Descripción">
-            <input
-              type="text"
-              name="description"
-              placeholder="Sueldo, freelance..."
-              className="w-full rounded border px-3 py-2"
-            />
-          </Field>
-        </div>
-        <div className="w-36">
-          <Field label="Monto">
-            <input
-              type="number"
-              name="amount"
-              placeholder="0.00"
-              step="0.01"
-              min="0.01"
-              required
-              className="w-full rounded border px-3 py-2"
-            />
-          </Field>
-        </div>
-        <button type="submit" className="rounded bg-foreground px-4 py-2 text-background">
-          Agregar
-        </button>
-      </form>
+      <Card className="mb-8 p-4">
+        <form action={addIncome} className="flex items-end gap-2">
+          <input type="hidden" name="month" value={month} />
+          <div className="flex-1">
+            <Field label="Descripción">
+              <input type="text" name="description" placeholder="Sueldo, freelance..." />
+            </Field>
+          </div>
+          <div className="w-36">
+            <Field label="Monto">
+              <input type="number" name="amount" placeholder="0.00" step="0.01" min="0.01" required />
+            </Field>
+          </div>
+          <Button type="submit">Agregar</Button>
+        </form>
+      </Card>
 
-      <ul className="space-y-2">
-        {monthIncome.map((i) => (
-          <li key={i.id} className="flex items-center justify-between rounded border px-3 py-2">
-            <span>
-              {i.description ?? "Ingreso"} — ${i.amount.toLocaleString("es-AR")}
-            </span>
-            <form action={deleteIncome.bind(null, i.id)}>
-              <button type="submit" className="text-red-600 hover:underline">
-                Borrar
-              </button>
-            </form>
-          </li>
-        ))}
-        {monthIncome.length === 0 && (
-          <li className="text-sm text-zinc-500">Sin ingresos en {month}.</li>
-        )}
-      </ul>
+      {monthIncome.length === 0 ? (
+        <EmptyState>Sin ingresos en {month}.</EmptyState>
+      ) : (
+        <Card className="divide-y divide-border">
+          {monthIncome.map((i) => (
+            <div key={i.id} className="flex items-center justify-between px-4 py-3">
+              <span>
+                {i.description ?? "Ingreso"} — <Money amount={i.amount} tone="positive" />
+              </span>
+              <form action={deleteIncome.bind(null, i.id)}>
+                <Button type="submit" variant="danger" size="sm">
+                  <TrashIcon size={16} aria-hidden="true" />
+                  <span className="sr-only">Borrar</span>
+                </Button>
+              </form>
+            </div>
+          ))}
+        </Card>
+      )}
     </div>
   );
 }

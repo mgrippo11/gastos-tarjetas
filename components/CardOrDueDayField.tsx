@@ -20,12 +20,7 @@ export function CardOrDueDayField({
   return (
     <>
       <Field label="Tarjeta">
-        <select
-          name="cardId"
-          value={cardId}
-          onChange={(e) => setCardId(e.target.value)}
-          className="w-full rounded border px-3 py-2"
-        >
+        <select name="cardId" value={cardId} onChange={(e) => setCardId(e.target.value)}>
           <option value="">Varios (efectivo / débito)</option>
           {cards.map((c) => (
             <option key={c.id} value={c.id}>
@@ -44,7 +39,6 @@ export function CardOrDueDayField({
             min={1}
             max={31}
             defaultValue={defaultDueDay ?? undefined}
-            className="w-full rounded border px-3 py-2"
           />
         </Field>
       )}

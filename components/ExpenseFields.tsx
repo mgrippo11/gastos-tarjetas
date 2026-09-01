@@ -31,7 +31,6 @@ export function ExpenseFields({
           placeholder="Spotify, supermercado..."
           defaultValue={defaults?.description}
           required
-          className="w-full rounded border px-3 py-2"
         />
       </Field>
 
@@ -44,12 +43,12 @@ export function ExpenseFields({
           min="0.01"
           defaultValue={defaults?.amount}
           required
-          className="w-full rounded border px-3 py-2"
+          className="font-money"
         />
       </Field>
 
       <Field label="Categoría">
-        <select name="categoryId" defaultValue={defaults?.categoryId ?? ""} className="w-full rounded border px-3 py-2">
+        <select name="categoryId" defaultValue={defaults?.categoryId ?? ""}>
           <option value="">Sin categoría</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
@@ -74,7 +73,6 @@ export function ExpenseFields({
               defaultValue={defaults?.totalInstallments ?? 1}
               min={1}
               required
-              className="w-full rounded border px-3 py-2"
             />
           </Field>
         </div>
@@ -85,7 +83,6 @@ export function ExpenseFields({
               name="purchaseMonth"
               defaultValue={defaults?.purchaseMonth ?? currentMonth()}
               required
-              className="w-full rounded border px-3 py-2"
             />
           </Field>
         </div>
