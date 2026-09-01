@@ -29,7 +29,8 @@ export async function parsePdf(formData: FormData): Promise<ImportCandidate[]> {
   const text = await extractPdfText(buffer);
   const lines = parseStatementText(text);
 
-  return lines.map((l) => {
+  // montos negativos son pagos/créditos (ej. "SU PAGO EN PESOS"), no gastos
+  return lines.filter((l) => l.amount > 0).map((l) => {
     const statementMonth = shortDateToMonth(l.date);
     // "Cuota 5/12" en agosto -> la compra fue hace 4 meses, en abril.
     const purchaseMonth = subtractMonths(statementMonth, l.installmentNumber - 1);

@@ -30,11 +30,10 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
           candidates.map((c) => ({
             ...c,
             categoryId: null,
-            // negativo = pago/crédito, no un gasto. Cuota > 1/N = ya venía en
-            // cuotas: lo más probable es que ya esté cargada de un mes
-            // anterior, así que arranca desmarcada (el usuario la tilda si
-            // en realidad es la primera vez que la ve).
-            included: c.amount > 0 && c.installmentNumber === 1,
+            // Cuota > 1/N = ya venía en cuotas: lo más probable es que ya
+            // esté cargada de un mes anterior, así que arranca desmarcada
+            // (el usuario la tilda si en realidad es la primera vez que la ve).
+            included: c.installmentNumber === 1,
           }))
         );
       } catch (e) {
@@ -98,7 +97,9 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
     );
   }
 
-  const includedCount = rows.filter((r) => r.included).length;
+  const included = rows.filter((r) => r.included);
+  const includedCount = included.length;
+  const includedTotal = included.reduce((sum, r) => sum + r.amount, 0);
 
   return (
     <div className="space-y-4">
@@ -189,6 +190,11 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
           </tbody>
         </table>
       </div>
+
+      <p className="text-right text-sm font-medium">
+        Total a importar: {includedCount} gasto{includedCount === 1 ? "" : "s"} · $
+        {includedTotal.toLocaleString("es-AR")}
+      </p>
 
       <div className="flex gap-2">
         <button onClick={() => setRows(null)} className="rounded border px-4 py-2">
