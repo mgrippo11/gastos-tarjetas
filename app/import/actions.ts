@@ -6,13 +6,15 @@ import { auth } from "@/auth";
 import { db } from "@/db/client";
 import { expenses } from "@/db/schema";
 import { extractPdfText, parseStatementText } from "@/lib/pdf-parser";
-import { shortDateToMonth } from "@/lib/dates";
+import { shortDateToMonth, subtractMonths } from "@/lib/dates";
 
 export type ImportCandidate = {
   date: string;
   description: string;
   amount: number;
   purchaseMonth: string;
+  totalInstallments: number;
+  installmentNumber: number; // 1 = compra nueva; >1 = ya venía en cuotas, probablemente ya cargada
 };
 
 /** Extrae y parsea el PDF. No toca la base — el resultado se edita en el navegador antes de confirmar. */
@@ -27,7 +29,12 @@ export async function parsePdf(formData: FormData): Promise<ImportCandidate[]> {
   const text = await extractPdfText(buffer);
   const lines = parseStatementText(text);
 
-  return lines.map((l) => ({ ...l, purchaseMonth: shortDateToMonth(l.date) }));
+  return lines.map((l) => {
+    const statementMonth = shortDateToMonth(l.date);
+    // "Cuota 5/12" en agosto -> la compra fue hace 4 meses, en abril.
+    const purchaseMonth = subtractMonths(statementMonth, l.installmentNumber - 1);
+    return { ...l, purchaseMonth };
+  });
 }
 
 export type ImportRow = {

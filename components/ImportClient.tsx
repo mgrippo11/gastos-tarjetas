@@ -8,7 +8,6 @@ type Card = { id: number; name: string };
 type Category = { id: number; name: string };
 type EditableRow = ImportCandidate & {
   categoryId: number | null;
-  totalInstallments: number;
   included: boolean;
 };
 
@@ -31,8 +30,11 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
           candidates.map((c) => ({
             ...c,
             categoryId: null,
-            totalInstallments: 1,
-            included: c.amount > 0, // los montos negativos suelen ser pagos, no gastos
+            // negativo = pago/crédito, no un gasto. Cuota > 1/N = ya venía en
+            // cuotas: lo más probable es que ya esté cargada de un mes
+            // anterior, así que arranca desmarcada (el usuario la tilda si
+            // en realidad es la primera vez que la ve).
+            included: c.amount > 0 && c.installmentNumber === 1,
           }))
         );
       } catch (e) {
@@ -133,6 +135,12 @@ export function ImportClient({ cards, categories }: { cards: Card[]; categories:
                     onChange={(e) => updateRow(i, { description: e.target.value })}
                     className="w-full min-w-[10rem] rounded border px-2 py-1"
                   />
+                  {r.totalInstallments > 1 && (
+                    <div className="mt-0.5 text-xs text-zinc-500">
+                      Cuota {r.installmentNumber}/{r.totalInstallments}
+                      {r.installmentNumber > 1 && " — probablemente ya cargada, revisá antes de tildar"}
+                    </div>
+                  )}
                 </td>
                 <td className="py-1 pr-2">
                   <input
