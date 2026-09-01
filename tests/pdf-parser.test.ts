@@ -3,24 +3,34 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseStatementText } from "../lib/pdf-parser";
 
-const fixture = readFileSync(
-  join(__dirname, "fixtures/resumen-ejemplo.txt"),
-  "utf-8"
-);
+// Fixture con datos inventados, pero replicando particularidades reales de un
+// resumen ICBC/Visa: fechas "DD.MM.YY", comprobante "NNNNNN*" antes de la
+// descripción, y líneas que pdf-parse a veces duplica/junta con un tab.
+const fixture = readFileSync(join(__dirname, "fixtures/resumen-ejemplo.txt"), "utf-8");
 
 describe("parseStatementText", () => {
-  it("extrae las líneas de gasto de un resumen real (5 de 5)", () => {
+  it("extrae los consumos de un resumen real, ignora comisiones/pagos/encabezados", () => {
     const result = parseStatementText(fixture);
     expect(result).toEqual([
-      { date: "03/01", description: "SPOTIFY AR", amount: 1499 },
-      { date: "05/01", description: "SUPERMERCADO DIA SUC 123", amount: 8750.5 },
-      { date: "12/01", description: "PAGO SU FACTURA", amount: -15000 },
-      { date: "18/01", description: "NETFLIX.COM", amount: 3200 },
-      { date: "20/01", description: "FARMACITY", amount: 980.25 },
+      { date: "20.06.26", description: "SUPERMERCADO EJEMPLO", amount: 5250.75 },
+      { date: "25.06.26", description: "SERVICIO STREAMING", amount: 2999 },
+      { date: "28.07.26", description: "FARMACIA EJEMPLO 000000012345", amount: 1480.5 },
     ]);
   });
 
-  it("descarta encabezados, totales y líneas sin fecha sin romper el resto", () => {
+  it("deduplica una línea que pdf-parse repite separada por tab", () => {
+    const text = "20.06.26 111111* SUPERMERCADO EJEMPLO 5.250,75\t20.06.26 111111* SUPERMERCADO EJEMPLO 5.250,75";
+    expect(parseStatementText(text)).toEqual([
+      { date: "20.06.26", description: "SUPERMERCADO EJEMPLO", amount: 5250.75 },
+    ]);
+  });
+
+  it("descarta una línea cuyo último monto es la columna de dólares en 0,00 (comisiones/pagos)", () => {
+    const text = "30.06.26 COMISION MANT. DE CUENTA 9.500,00 0,00";
+    expect(parseStatementText(text)).toEqual([]);
+  });
+
+  it("descarta encabezados y líneas sin fecha sin romper el resto", () => {
     const text = [
       "RESUMEN DE CUENTA",
       "SALDO ANTERIOR                    45.230,10",
