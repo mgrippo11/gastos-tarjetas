@@ -46,7 +46,7 @@ expenses
   description
   amount              -- monto de CADA cuota, en ARS
   total_installments  -- 1 si es pago único
-  purchase_month      -- "YYYY-MM", mes de la 1ra cuota
+  purchase_month      -- "YYYY-MM", mes de PAGO de la 1ra cuota (ver nota abajo)
   due_day             -- nullable int 1-31, solo aplica a gastos varios (card_id null)
   created_at
 
@@ -57,6 +57,8 @@ income
 **Aislamiento por usuario**: toda query de `cards`/`expenses`/`income` filtra por `owner_email = session.user.email`. `categories` es la única tabla compartida entre usuarios.
 
 **Cuotas automáticas**: no se duplica una fila por mes. Un gasto con `total_installments=3` y `purchase_month="2026-01"` aparece calculado en Enero, Febrero y Marzo (cuota 1/3, 2/3, 3/3) con una sola carga. Esto es la mejora real sobre el Excel actual.
+
+**`purchase_month` = mes en que se PAGA, no en que se compra.** La app no calcula el desplazamiento automáticamente con `closing_day` de la tarjeta (ese campo es informativo). Al cargar un gasto a mano, Martín escribe directamente el mes en que le va a caer en el resumen (ej: compra de agosto que cae en el resumen que vence en septiembre → carga "septiembre"). En cambio, al **importar un PDF**, cada línea usa el mes calendario real de la transacción tal como figura en el resumen (decisión explícita: no agrupar todo al mes de vencimiento del resumen) — por lo que una compra de fin de mes puede quedar en el mes anterior al de otras líneas del mismo resumen.
 
 ## Importación de resúmenes (PDF)
 

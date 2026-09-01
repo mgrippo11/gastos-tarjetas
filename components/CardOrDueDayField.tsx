@@ -64,13 +64,17 @@ export function CardOrDueDayField({
         </div>
       )}
 
-      <Field label={isVarios ? "Mes" : "Mes de la 1ra cuota"}>
+      <Field label={isVarios ? "Mes de pago" : "Mes de pago de la 1ra cuota"}>
         <input
           type="month"
           name="purchaseMonth"
           defaultValue={defaultPurchaseMonth ?? currentMonth()}
           required
         />
+        <p className="mt-1 text-xs text-muted-foreground">
+          El mes en que lo pagás, no en el que lo compraste (si tu tarjeta cierra a fin de
+          mes, un gasto de agosto suele pagarse en septiembre).
+        </p>
       </Field>
     </>
   );

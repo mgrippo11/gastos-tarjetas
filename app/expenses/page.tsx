@@ -70,7 +70,7 @@ export default async function ExpensesPage({
                   <Money amount={e.amount} className="text-sm" /> c/u
                 </div>
                 <div className="text-xs text-muted-foreground/80">
-                  Compra: {e.purchaseMonth}
+                  1ra cuota: {e.purchaseMonth}
                   {e.dueDay ? ` · vence el ${e.dueDay}` : ""}
                 </div>
               </div>
