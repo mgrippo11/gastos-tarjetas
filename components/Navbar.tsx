@@ -4,6 +4,7 @@ import { auth, isAdminEmail, signOut } from "@/auth";
 const LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/expenses", label: "Gastos" },
+  { href: "/import", label: "Importar PDF" },
   { href: "/income", label: "Ingresos" },
   { href: "/cards", label: "Tarjetas" },
   { href: "/categories", label: "Categorías" },

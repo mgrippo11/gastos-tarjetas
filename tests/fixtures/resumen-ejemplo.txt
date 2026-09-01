@@ -1,0 +1,14 @@
+RESUMEN DE CUENTA
+Periodo: 01/01/2026 - 31/01/2026
+Tarjeta: VISA XXXX 1234
+
+FECHA       DETALLE                          IMPORTE
+03/01       SPOTIFY AR                        1.499,00
+05/01       SUPERMERCADO DIA SUC 123          8.750,50
+12/01       PAGO SU FACTURA                  -15.000,00
+18/01       NETFLIX.COM                       3.200,00
+20/01       FARMACITY                           980,25
+
+SALDO ANTERIOR                                45.230,10
+TOTAL PERIODO ACTUAL                          -1.570,25
+LIMITE DE COMPRA                             250.000,00
