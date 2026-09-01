@@ -41,12 +41,12 @@
 **Descripción:** NextAuth Google provider, restringido al email en `ADMIN_EMAIL` vía callback `signIn`. Middleware que protege todas las rutas salvo `/login`.
 
 **Acceptance criteria:**
-- [ ] Entrar a cualquier ruta sin sesión redirige a `/login`
-- [ ] Login con la cuenta Google de `ADMIN_EMAIL` entra
+- [x] Entrar a cualquier ruta sin sesión redirige a `/login`
+- [x] Login con la cuenta Google de `ADMIN_EMAIL` entra
 - [ ] Login con cualquier otra cuenta Google es rechazado, no entra
 
 **Verification:**
-- [ ] Manual: probar los 3 casos de arriba en local y en Vercel (con env vars configuradas ahí también)
+- [x] Manual: probar los 3 casos de arriba en local y en Vercel (con env vars configuradas ahí también)
 
 **Dependencies:** Task 1
 **Files:** `app/(auth)/login/page.tsx`, `middleware.ts`, `lib/auth.ts`
@@ -55,8 +55,8 @@
 ---
 
 ## Checkpoint: Foundation
-- [ ] App deployada en Vercel con login funcionando
-- [ ] Nadie sin contraseña puede ver una ruta protegida
+- [x] App deployada en Vercel con login funcionando
+- [x] Nadie sin contraseña puede ver una ruta protegida
 - [ ] Revisar con Martín antes de seguir
 
 ---
