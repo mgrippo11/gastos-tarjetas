@@ -24,12 +24,12 @@
 **Descripción:** Definir schema Drizzle (`cards`, `categories`, `expenses`, `income`) y aplicarlo a Turso.
 
 **Acceptance criteria:**
-- [ ] `npm run db:push` aplica el schema a Turso sin error
-- [ ] `npm run db:studio` muestra las 4 tablas vacías
+- [x] `npm run db:push` aplica el schema a Turso sin error
+- [x] `npm run db:studio` muestra las 4 tablas vacías
 
 **Verification:**
-- [ ] Manual: `db:studio` conecta y muestra tablas
-- [ ] Tests: ninguno (schema declarativo, se valida con push real)
+- [x] Manual: `db:studio` conecta y muestra tablas
+- [x] Tests: ninguno (schema declarativo, se valida con push real)
 
 **Dependencies:** Task 1
 **Files:** `db/schema.ts`, `db/client.ts`, `drizzle.config.ts`
