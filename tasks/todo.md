@@ -221,11 +221,11 @@
 **Descripción:** Extraer texto de un PDF (`pdf-parse`) y parsear líneas candidatas a gasto (fecha + descripción + monto) por regex genérico.
 
 **Acceptance criteria:**
-- [ ] Con el texto de al menos 1 resumen real de Martín, extrae la mayoría de las líneas de gasto reconocibles
-- [ ] Líneas que no matchean el patrón se descartan sin romper el parseo del resto
+- [x] Con el texto de al menos 1 resumen real de Martín, extrae la mayoría de las líneas de gasto reconocibles (probado con ICBC 6/6 y Galicia 23/23 reales)
+- [x] Líneas que no matchean el patrón se descartan sin romper el parseo del resto
 
 **Verification:**
-- [ ] Tests: `npm test lib/pdf-parser.test.ts` con un fixture de texto real (anonimizado si hace falta)
+- [x] Tests: `npm test` — 20/20, fixtures anonimizados que replican los layouts reales
 
 **Dependencies:** None (independiente, se puede empezar en paralelo)
 **Files:** `lib/pdf-parser.ts`, `tests/pdf-parser.test.ts`, `tests/fixtures/resumen-ejemplo.txt`
@@ -237,11 +237,11 @@
 **Descripción:** Subir PDF, elegir tarjeta, correr el parser, mostrar tabla editable de gastos candidatos (borrar fila, editar monto/descripción, asignar categoría).
 
 **Acceptance criteria:**
-- [ ] Subir un PDF real muestra una tabla con los gastos detectados
-- [ ] Se puede editar o borrar cualquier fila antes de confirmar
+- [x] Subir un PDF real muestra una tabla con los gastos detectados
+- [x] Se puede editar o borrar cualquier fila antes de confirmar (checkbox "incluir" excluye la fila del import)
 
 **Verification:**
-- [ ] Manual: subir un resumen real
+- [x] Manual: subido ICBC y Galicia reales, preview + total correctos
 
 **Dependencies:** Task 4, Task 5, Task 11
 **Files:** `app/import/page.tsx`, `app/import/actions.ts`
