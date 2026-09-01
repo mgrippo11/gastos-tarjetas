@@ -6,13 +6,13 @@
 **Descripción:** Next.js 14 (App Router) + TypeScript + Tailwind + ESLint + Vitest, deploy inicial vacío a Vercel.
 
 **Acceptance criteria:**
-- [ ] `npm run dev` levanta una página en blanco sin errores
-- [ ] El proyecto está en el repo git dentro de `gastos-tarjetas/`
-- [ ] Deployado en Vercel, la URL pública carga
+- [x] `npm run dev` levanta una página en blanco sin errores
+- [x] El proyecto está en el repo git dentro de `gastos-tarjetas/`
+- [x] Deployado en Vercel, la URL pública carga (https://gastos-tarjetas-six.vercel.app/)
 
 **Verification:**
-- [ ] Build: `npm run build` sin errores
-- [ ] Manual: abrir la URL de Vercel
+- [x] Build: `npm run build` sin errores
+- [x] Manual: abrir la URL de Vercel
 
 **Dependencies:** None
 **Files:** `package.json`, `app/layout.tsx`, `app/page.tsx`, `tailwind.config.ts`
