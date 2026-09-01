@@ -1,6 +1,5 @@
 import { Field } from "@/components/Field";
 import { CardOrDueDayField } from "@/components/CardOrDueDayField";
-import { currentMonth } from "@/lib/dates";
 
 type Card = { id: number; name: string };
 type Category = { id: number; name: string };
@@ -62,31 +61,9 @@ export function ExpenseFields({
         cards={cards}
         defaultCardId={defaults?.cardId}
         defaultDueDay={defaults?.dueDay}
+        defaultTotalInstallments={defaults?.totalInstallments}
+        defaultPurchaseMonth={defaults?.purchaseMonth}
       />
-
-      <div className="flex gap-2">
-        <div className="w-32">
-          <Field label="Cuotas">
-            <input
-              type="number"
-              name="totalInstallments"
-              defaultValue={defaults?.totalInstallments ?? 1}
-              min={1}
-              required
-            />
-          </Field>
-        </div>
-        <div className="flex-1">
-          <Field label="Mes de la 1ra cuota">
-            <input
-              type="month"
-              name="purchaseMonth"
-              defaultValue={defaults?.purchaseMonth ?? currentMonth()}
-              required
-            />
-          </Field>
-        </div>
-      </div>
     </>
   );
 }
