@@ -1,4 +1,5 @@
 import { Field } from "@/components/Field";
+import { CardOrDueDayField } from "@/components/CardOrDueDayField";
 import { currentMonth } from "@/lib/dates";
 
 type Card = { id: number; name: string };
@@ -58,28 +59,11 @@ export function ExpenseFields({
         </select>
       </Field>
 
-      <Field label="Tarjeta">
-        <select name="cardId" defaultValue={defaults?.cardId ?? ""} className="w-full rounded border px-3 py-2">
-          <option value="">Varios (efectivo / débito)</option>
-          {cards.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </Field>
-
-      <Field label="Día de vencimiento (solo si es 'Varios')">
-        <input
-          type="number"
-          name="dueDay"
-          placeholder="1-31"
-          min={1}
-          max={31}
-          defaultValue={defaults?.dueDay ?? undefined}
-          className="w-full rounded border px-3 py-2"
-        />
-      </Field>
+      <CardOrDueDayField
+        cards={cards}
+        defaultCardId={defaults?.cardId}
+        defaultDueDay={defaults?.dueDay}
+      />
 
       <div className="flex gap-2">
         <div className="w-32">
